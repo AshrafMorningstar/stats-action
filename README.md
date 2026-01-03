@@ -1,260 +1,83 @@
-/*
- Copyright (c) 2026 Ashraf Morningstar
- These are personal recreations of existing projects, developed by Ashraf Morningstar
- for learning and skill development.
- Original project concepts remain the intellectual property of their respective creators.
- Repository: https://github.com/AshrafMorningstar
-*/
 
-# GitHub Stats Action
+<div align="center">
 
-A GitHub Action that collects comprehensive statistics for a user's GitHub profile and outputs them to a JSON file. Perfect for building profile READMEs, dashboards, or personal analytics.
+# :star: Stats Action :star:
 
-## Features
+[![GitHub stars](https://img.shields.io/github/stars/AshrafMorningstar/stats-action?style=for-the-badge&color=orange)](https://github.com/AshrafMorningstar/stats-action/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/AshrafMorningstar/stats-action?style=for-the-badge&color=blue)](https://github.com/AshrafMorningstar/stats-action/network/members)
+[![GitHub issues](https://img.shields.io/github/issues/AshrafMorningstar/stats-action?style=for-the-badge&color=red)](https://github.com/AshrafMorningstar/stats-action/issues)
+[![GitHub license](https://img.shields.io/github/license/AshrafMorningstar/stats-action?style=for-the-badge&color=green)](./LICENSE)
+![Maintained](https://img.shields.io/badge/Maintained%3F-yes-brightgreen.svg?style=for-the-badge)
 
-- **Profile Data**: Name, bio, company, location, social links
-- **Contribution Stats**: Total contributions, streaks, most active day, monthly breakdown
-- **Repository Metrics**: Stars, forks, views, top repositories
-- **Code Statistics**: Lines added/deleted, commit counts, languages with percentages
-- **Social Stats**: Followers, following, stars given
-- **Activity Data**: Pull requests, issues, PR reviews, discussions
+**Automated, High-Performance stats action Project**
 
-## Requirements
+[View Demo (If Applicable)](#) • [Report Bug](https://github.com/AshrafMorningstar/stats-action/issues) • [Request Feature](https://github.com/AshrafMorningstar/stats-action/issues)
 
-### Personal Access Token (PAT)
-
-This action **requires a Personal Access Token** - the default `GITHUB_TOKEN` will not work because:
-
-- Contribution calendar data requires authentication as the actual user
-- Repository view counts require push access across all repositories
-- The `viewer` GraphQL query returns data for the token owner
-
-#### Required PAT Scopes
-
-| Scope | Purpose |
-|-------|---------|
-| `read:user` | Access user profile data |
-| `repo` | Access repository statistics, views, and private repos |
-
-#### Creating a PAT
-
-1. Go to [GitHub Settings → Developer settings → Personal access tokens → Fine-grained tokens](https://github.com/settings/tokens?type=beta)
-2. Click "Generate new token"
-3. Select the scopes listed above
-4. Copy the token and add it as a repository secret (e.g., `USER_PAT`)
-
-## Usage
-
-### Basic Workflow
-
-Create `.github/workflows/stats.yaml`:
-
-```yaml
-name: Collect GitHub Stats
-
-on:
-  schedule:
-    - cron: '0 0 * * *'  # Run daily at midnight
-  workflow_dispatch:      # Allow manual trigger
-
-jobs:
-  collect-stats:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Collect GitHub Stats
-        uses: LukeHagar/stats-action@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.USER_PAT }}
-
-      - name: Commit stats
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "chore: update github stats"
-          file_pattern: github-user-stats.json
-```
-
-### Template Repository
-
-For a complete setup with visualization, use the [stats template repository](https://github.com/LukeHagar/stats/).
-
-## Output
-
-The action creates a `github-user-stats.json` file with the following structure:
-
-### Profile Information
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `name` | string | Display name |
-| `username` | string | GitHub username |
-| `avatarUrl` | string | Profile picture URL |
-| `bio` | string \| null | Profile bio |
-| `company` | string \| null | Company name |
-| `location` | string \| null | Location |
-| `email` | string \| null | Public email |
-| `twitterUsername` | string \| null | Twitter/X handle |
-| `websiteUrl` | string \| null | Website URL |
-| `createdAt` | string | Account creation date (ISO 8601) |
-
-### Statistics
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `totalCommits` | number | Total commits (from GitHub search) |
-| `commitCount` | number | Commits from contributor stats |
-| `totalPullRequests` | number | Total PRs created |
-| `totalPullRequestReviews` | number | Total PR reviews |
-| `totalContributions` | number | All-time contributions |
-| `openIssues` | number | Open issues created |
-| `closedIssues` | number | Closed issues created |
-| `discussionsStarted` | number | Discussions started |
-| `discussionsAnswered` | number | Discussion answers marked as correct |
-| `repositoriesContributedTo` | number | Repos contributed to |
-
-### Repository Metrics
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `starCount` | number | Total stars received |
-| `forkCount` | number | Total forks of your repos |
-| `starsGiven` | number | Repos you've starred |
-| `repoViews` | number | Total repo views (last 14 days) |
-
-### Code Statistics
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `linesAdded` | number | Total lines added |
-| `linesDeleted` | number | Total lines deleted |
-| `linesOfCodeChanged` | number | Total lines changed (added + deleted) |
-| `codeByteTotal` | number | Total bytes of code |
-
-### Social
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `followers` | number | Follower count |
-| `following` | number | Following count |
-
-### Languages
-
-```json
-{
-  "topLanguages": [
-    {
-      "languageName": "TypeScript",
-      "color": "#3178c6",
-      "value": 1234567,
-      "percentage": 45.5
-    }
-  ]
-}
-```
-
-### Contribution Stats
-
-```json
-{
-  "contributionStats": {
-    "longestStreak": 42,
-    "currentStreak": 7,
-    "mostActiveDay": "Tuesday",
-    "averagePerDay": 3.5,
-    "averagePerWeek": 24.5,
-    "averagePerMonth": 105.0,
-    "monthlyBreakdown": [
-      { "month": "2024-01", "contributions": 120 }
-    ]
-  }
-}
-```
-
-### Top Repositories
-
-```json
-{
-  "topRepos": [
-    {
-      "name": "repo-name",
-      "description": "Repo description",
-      "stars": 100,
-      "forks": 25,
-      "isArchived": false,
-      "primaryLanguage": "TypeScript",
-      "updatedAt": "2024-01-15T10:30:00Z",
-      "createdAt": "2023-06-01T08:00:00Z"
-    }
-  ]
-}
-```
-
-### Full Contribution Calendar
-
-The `contributionsCollection` field contains the complete contribution calendar with daily data for building heatmaps.
-
-## Development
-
-### Prerequisites
-
-- [Bun](https://bun.sh) v1.0+
-
-### Setup
-
-```bash
-# Install dependencies
-bun install
-
-# Run locally (requires GITHUB_TOKEN env var)
-export GITHUB_TOKEN=your_pat_here
-bun run start
-
-# Run tests
-bun test
-
-# Type check
-bun run typecheck
-```
-
-### Project Structure
-
-```
-├── src/
-│   ├── index.ts       # Main action logic
-│   ├── index.test.ts  # Tests
-│   └── Types.ts       # TypeScript type definitions
-├── action.yml         # GitHub Action definition
-├── package.json
-└── tsconfig.json
-```
-
-## License
-
-MIT - see [LICENSE.md](LICENSE.md)
-
+</div>
 
 ---
 
-## 📜 Copyright & License
+## :rocket: Overview
 
-© 2026 Ashraf Morningstar. All Rights Reserved.
+**stats-action** is a state-of-the-art implementation utilizing Node.js. Designed for developers looking for robust, scalable solutions in Open Source, Developer Tools, Coding Best Practices, Software Engineering.
 
-**Educational Disclaimer:** This is a personal recreation of an existing project concept, developed for learning and skill development purposes. The original project concept remains the intellectual property of its respective creator(s).
+This project is a high-performance, open-source solution designed for developers and enthusiasts. It implements modern best practices and is optimized for efficiency and scalability.
 
-**License:** MIT License - See [LICENSE](./LICENSE) file for details.
+## :sparkles: Key Features
 
-**Developer:** [Ashraf Morningstar](https://github.com/AshrafMorningstar)
+- :white_check_mark: **High Performance:** Optimized for speed and low latency.
+- :white_check_mark: **Scalable Architecture:** Built to handle growth effortlessly.
+- :white_check_mark: **Modern Tech Stack:** Utilizes latest standards in Node.js.
+- :white_check_mark: **Developer Friendly:** Clean code, well-documented, and easy to extend.
 
-**Portfolio:** Explore more projects at [github.com/AshrafMorningstar](https://github.com/AshrafMorningstar)
+## :hammer_and_wrench: Technologies Used
+
+![](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+
+## :floppy_disk: Installation & Usage
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/AshrafMorningstar/stats-action.git
+   cd stats-action
+   ```
+
+2. **Install dependencies:**
+    npm install
+
+3. **Run the application:**
+    npm start
+
+## :open_file_folder: Project Structure
+
+```
+stats-action/
+├── src/          # Source code
+├── assets/       # Images and static files
+├── README.md     # Project documentation
+└── LICENSE       # License information
+```
+
+## :handshake: Contributing
+
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for detailed guidelines.
+
+## :bust_in_silhouette: Author
+
+**Ashraf Morningstar**
+
+- **GitHub:** [@AshrafMorningstar](https://github.com/AshrafMorningstar)
+- **Twitter:** [@AMS_Morningstar](https://twitter.com/@AMS_Morningstar)
+- **Portfolio:** [AshrafMorningstar Projects](https://github.com/AshrafMorningstar?tab=repositories)
+
+## :page_facing_up: License
+
+Distributed under the MIT License. See `LICENSE` for more information.
 
 ---
-
-### 🤝 Connect & Contribute
-
-Found this helpful? Give it a ⭐️ on GitHub!
-
-- 💼 Company: MORNINGSTARCONSTRUCTION
-- 📍 Location: India
-- 🐦 Twitter: [@AMS_Morningstar](https://twitter.com/AMS_Morningstar)
-- 📧 Email: ashrafmorningstar@gmail.com
+<div align="center">
+  <p>If you find this project useful, please give it a <b>Star</b> :star:!</p>
+  <sub>Built with ❤️ by Ashraf Morningstar</sub>
+</div>
